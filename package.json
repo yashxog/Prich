@@ -1,0 +1,20 @@
+{
+  "name": "prich",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace @prich/frontend",
+    "dev:backend": "npm run dev --workspace @prich/backend",
+    "test": "npm run test --workspaces --if-present",
+    "build": "npm run build --workspace @prich/shared && npm run build --workspace @prich/backend && npm run build --workspace @prich/frontend",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

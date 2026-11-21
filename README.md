@@ -1,6 +1,8 @@
 # Prich
 
-Production-oriented TypeScript monorepo with independently deployable frontend and backend services.
+**Prich is a creator marketplace for performance-based posts on X and LinkedIn.**
+
+The platform uses a production-oriented TypeScript monorepo with independently deployable frontend and backend services.
 
 ## Structure
 

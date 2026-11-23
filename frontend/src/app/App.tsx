@@ -1,49 +1,224 @@
-import { useState } from 'react'
-import type { ApiHealth } from '@prich/shared'
+import { useState, type ChangeEvent, type FormEvent, type ReactElement } from 'react'
+import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import { AuthCallbackPage } from '../features/auth/AuthCallbackPage'
+import { BrandDashboardPage } from '../features/auth/BrandDashboardPage'
+import { BrandLoginPage } from '../features/auth/BrandLoginPage'
+import { BrandOnboardingPage } from '../features/auth/BrandOnboardingPage'
+import { BrandSignUpPage } from '../features/auth/BrandSignUpPage'
+import { CreatorDashboardPage } from '../features/auth/CreatorDashboardPage'
+import { CreatorLoginPage } from '../features/auth/CreatorLoginPage'
+import { CreatorSignUpPage } from '../features/auth/CreatorSignUpPage'
 
-const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+type AccountRole = 'brand' | 'creator'
 
-type ApiStatus = 'idle' | 'loading' | 'online' | 'offline'
+interface RoleOption {
+  description: string
+  eyebrow: string
+  title: string
+  value: AccountRole
+}
 
-function App() {
-  const [apiStatus, setApiStatus] = useState<ApiStatus>('idle')
+interface RoleOptionCardProps {
+  isSelected: boolean
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  option: RoleOption
+}
 
-  async function checkApi() {
-    setApiStatus('loading')
+const ROLE_OPTIONS = [
+  {
+    value: 'brand',
+    eyebrow: 'I represent a brand',
+    title: 'Find creators who fit',
+    description: 'Discover trusted voices, agree on terms, and manage campaigns in one place.',
+  },
+  {
+    value: 'creator',
+    eyebrow: 'I am a creator',
+    title: 'Turn influence into work',
+    description: 'Show your best work, set your pricing, and collaborate with quality brands.',
+  },
+] as const satisfies readonly RoleOption[]
 
-    try {
-      const response = await fetch(`${apiUrl}/api/health`)
+/**
+ * Renders a compact check icon for benefit lists.
+ * @returns A decorative SVG check icon.
+ */
+function CheckIcon(): ReactElement {
+  return (
+    <svg aria-hidden="true" className="check-icon" viewBox="0 0 20 20">
+      <path d="m5 10.4 3 3L15.5 6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" />
+    </svg>
+  )
+}
 
-      if (!response.ok) {
-        throw new Error(`API returned ${response.status}`)
-      }
+/**
+ * Renders the application wordmark.
+ * @returns The Prich logo and product name.
+ */
+function Wordmark(): ReactElement {
+  return (
+    <a className="wordmark" href="#top" aria-label="Prich home">
+      <span aria-hidden="true" className="wordmark__mark">P</span>
+      <span>Prich</span>
+    </a>
+  )
+}
 
-      const health: ApiHealth = await response.json()
-      setApiStatus(health.status === 'ok' ? 'online' : 'offline')
-    } catch {
-      setApiStatus('offline')
+/**
+ * Renders one selectable account-role card.
+ * @param props - The role content, selection state, and change handler.
+ * @returns A labelled native radio control styled as a card.
+ */
+function RoleOptionCard({ isSelected, onChange, option }: RoleOptionCardProps): ReactElement {
+  return (
+    <label className="role-option">
+      <input
+        checked={isSelected}
+        name="account-role"
+        onChange={onChange}
+        type="radio"
+        value={option.value}
+      />
+      <span className="role-option__control" aria-hidden="true" />
+      <span className="role-option__copy">
+        <span className="role-option__eyebrow">{option.eyebrow}</span>
+        <strong>{option.title}</strong>
+        <span>{option.description}</span>
+      </span>
+    </label>
+  )
+}
+
+/**
+ * Renders the landing page and first role-selection step.
+ * @returns The Prich landing page.
+ */
+function LandingPage(): ReactElement {
+  const navigate = useNavigate()
+  const [selectedRole, setSelectedRole] = useState<AccountRole | null>(null)
+
+  /**
+   * Advances the onboarding preview for the selected account role.
+   * @param event - The role-selection form submission event.
+   * @returns Nothing.
+   */
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault()
+
+    if (selectedRole === 'creator') {
+      navigate('/creator/signup')
+      return
+    }
+
+    if (selectedRole === 'brand') {
+      navigate('/brand/signup')
     }
   }
 
-  return (
-    <main className="shell">
-      <section className="card" aria-labelledby="page-title">
-        <p className="eyebrow">Vite · React · TypeScript</p>
-        <h1 id="page-title">Prich is ready.</h1>
-        <p className="intro">
-          Your frontend, backend, and shared types are separated for clean development and independent deployment.
-        </p>
+  /**
+   * Updates the selected account role from its native radio input.
+   * @param event - The changed role radio input.
+   * @returns Nothing.
+   */
+  function handleRoleChange(event: ChangeEvent<HTMLInputElement>): void {
+    setSelectedRole(event.currentTarget.value as AccountRole)
+  }
 
-        <div className="actions">
-          <button type="button" onClick={checkApi} disabled={apiStatus === 'loading'}>
-            {apiStatus === 'loading' ? 'Checking…' : 'Check API'}
-          </button>
-          <output className={`status status--${apiStatus}`} aria-live="polite">
-            {apiStatus === 'idle' ? 'Not checked' : apiStatus}
-          </output>
+  return (
+    <div className="app" id="top">
+      <a className="skip-link" href="#main-content">Skip to main content</a>
+
+      <header className="site-header">
+        <Wordmark />
+        <nav aria-label="Primary navigation" className="site-nav">
+          <a href="#how-it-works">How it works</a>
+          <a href="#trust">Why Prich</a>
+        </nav>
+        <div className="header-actions">
+          <Link className="button button--secondary" to="/creator/login">Log in</Link>
+          <Link className="button button--primary" to="/creator/signup">Sign up</Link>
         </div>
-      </section>
-    </main>
+      </header>
+
+      <main className="hero" id="main-content">
+        <section className="hero__content" aria-labelledby="hero-title">
+          <p className="eyebrow">Creator partnerships, without the chaos</p>
+          <h1 id="hero-title">Find the right voice.<br />Ship the right story.</h1>
+          <p className="hero__intro">
+            Prich gives brands and creators one trusted place to discover, agree, create, approve, and get paid.
+          </p>
+
+          <ul className="benefit-list" id="trust">
+            <li><CheckIcon />Verified creator profiles and performance</li>
+            <li><CheckIcon />Clear packages, offers, and approvals</li>
+            <li><CheckIcon />Protected payments from brief to post</li>
+          </ul>
+
+          <div className="trust-note" aria-label="Product focus">
+            <span className="trust-note__avatars" aria-hidden="true">
+              <span>A</span><span>K</span><span>M</span>
+            </span>
+            <p><strong>Built for focused partnerships</strong><br />Starting with LinkedIn and X creators.</p>
+          </div>
+        </section>
+
+        <section className="onboarding-card" id="how-it-works" aria-labelledby="onboarding-title">
+          <div className="onboarding-card__heading">
+            <span className="step-label">Step 1 of 3</span>
+            <h2 id="onboarding-title">How will you use Prich?</h2>
+            <p>Choose your path. You can add a team or update your profile later.</p>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <fieldset className="role-options">
+              <legend className="sr-only">Choose an account type</legend>
+              <RoleOptionCard
+                isSelected={selectedRole === ROLE_OPTIONS[0].value}
+                onChange={handleRoleChange}
+                option={ROLE_OPTIONS[0]}
+              />
+              <RoleOptionCard
+                isSelected={selectedRole === ROLE_OPTIONS[1].value}
+                onChange={handleRoleChange}
+                option={ROLE_OPTIONS[1]}
+              />
+            </fieldset>
+
+            <button className="button button--primary continue-button" disabled={!selectedRole} type="submit">
+              {selectedRole ? `Continue as ${selectedRole === 'brand' ? 'a brand' : 'a creator'}` : 'Choose a path to continue'}
+              <span aria-hidden="true">→</span>
+            </button>
+            <p className="legal-copy">By continuing, you agree to our Terms and Privacy Policy.</p>
+          </form>
+        </section>
+      </main>
+
+      <footer className="site-footer">
+        <p>© 2026 Prich</p>
+        <p>A clearer way to work together.</p>
+      </footer>
+    </div>
+  )
+}
+
+/**
+ * Routes the public landing and account-specific authentication and workspace pages.
+ * @returns The Prich application route tree.
+ */
+function App(): ReactElement {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/creator/signup" element={<CreatorSignUpPage />} />
+      <Route path="/creator/login" element={<CreatorLoginPage />} />
+      <Route path="/creator/dashboard" element={<CreatorDashboardPage />} />
+      <Route path="/brand/signup" element={<BrandSignUpPage />} />
+      <Route path="/brand/login" element={<BrandLoginPage />} />
+      <Route path="/brand/onboarding" element={<BrandOnboardingPage />} />
+      <Route path="/brand/dashboard" element={<BrandDashboardPage />} />
+      <Route path="/auth/callback" element={<AuthCallbackPage />} />
+      <Route path="*" element={<Navigate replace to="/" />} />
+    </Routes>
   )
 }
 

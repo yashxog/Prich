@@ -41,8 +41,25 @@ Open `http://localhost:5173`. The API runs at `http://localhost:3000`.
 
 ## Environment
 
-Copy each `.env.example` to `.env` only when you need to override its defaults.
+Copy `frontend/.env.example` to `frontend/.env` and configure the browser-safe values:
+
+```text
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+VITE_API_URL=http://localhost:3000
+```
+
+Copy `backend/.env.example` to `backend/.env` and configure the API:
+
+```text
+PORT=3000
+FRONTEND_URL=http://localhost:5173
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SECRET_KEY=your-server-only-secret-key
+```
+
+Apply the SQL files under `supabase/migrations/` to the matching Supabase project. The frontend uses Supabase for authentication; all application data access goes through the backend. Never place `SUPABASE_SECRET_KEY` in a `VITE_` variable or expose it to the browser.
 
 ## Production
 
-Run `npm run build`. Deploy `frontend` and `backend` as separate services from this single repository.
+Run `npm run build`. Deploy `frontend` and `backend` as separate Vercel projects from this repository. Configure `VITE_API_URL` with the deployed API origin and configure `FRONTEND_URL` with the exact deployed frontend origin.

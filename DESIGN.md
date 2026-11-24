@@ -4,7 +4,7 @@
 
 - **Personality:** premium, calm, credible, and creator-led.
 - **Principle:** use editorial minimalism, strong type hierarchy, neutral surfaces, generous spacing, and restrained motion.
-- **Distinctness:** keep Prich recognisable through its own typography, violet identity, mint highlights, marketplace components, and content patterns.
+- **Distinctness:** keep Prich recognisable through its own typography, monochrome action system, violet and mint highlights, marketplace components, and content patterns.
 - **Product goal:** make pricing, reputation, campaign status, and the next required action immediately understandable.
 
 ## Visual Language
@@ -12,7 +12,8 @@
 - Prefer warm, quiet surfaces over pure-white pages.
 - Use typography and whitespace for hierarchy before adding colour or decoration.
 - Keep one clear primary action per screen.
-- Use thin borders and very light shadows; avoid glassmorphism, heavy gradients, and oversized shadows.
+- Use thin borders and very light shadows; avoid glassmorphism, full-surface gradients, and oversized shadows.
+- Reserve soft, grainy gradients for media, category tiles, and small icon backplates so colour feels expressive without weakening content hierarchy.
 - Use authentic creator work and profile imagery. Avoid generic AI art as interface decoration.
 - Use Lucide outline icons at a consistent `1.5px` stroke; never use emoji as interface icons.
 
@@ -45,7 +46,7 @@ Prich uses **Manrope** as its primary family for a clean, modern, and approachab
 
 ## Colour Tokens
 
-Prich uses a restrained black, cream, and grey foundation with a recognisable violet identity and mint highlight.
+Prich uses a restrained black, cream, and grey foundation. Primary actions are monochrome, while violet and mint remain supporting identity colours.
 
 ```css
 :root {
@@ -63,6 +64,19 @@ Prich uses a restrained black, cream, and grey foundation with a recognisable vi
   --color-brand-soft: #ECEAFF;
   --color-accent: #B9F4D0;
 
+  --color-button-primary: #000000;
+  --color-button-primary-hover: #292929;
+  --color-button-primary-active: #17161C;
+  --color-button-on-primary: #FFFFFF;
+  --color-button-secondary: #FFFFFF;
+  --color-button-secondary-hover: #F1EFE9;
+  --color-button-text: #000000;
+  --color-button-border: rgb(0 0 0 / 8%);
+
+  --gradient-coral: radial-gradient(circle at 68% 28%, #FFD37A 0%, #FF7450 38%, #B9362F 100%);
+  --gradient-iris: radial-gradient(circle at 30% 25%, #F5A6D8 0%, #8B78F6 48%, #4B63C7 100%);
+  --gradient-moss: radial-gradient(circle at 72% 22%, #B9E89B 0%, #5B9E78 48%, #66531F 100%);
+
   --color-success: #167A4A;
   --color-success-soft: #E5F6ED;
   --color-warning: #9A5A08;
@@ -76,11 +90,22 @@ Prich uses a restrained black, cream, and grey foundation with a recognisable vi
 }
 ```
 
-- The primary CTA uses `brand` with white text.
+- The primary CTA uses `button-primary` with `button-on-primary` text.
+- Secondary buttons use a white or transparent surface, black text, and the subtle `button-border`; increase border contrast when required by the surrounding surface.
+- Tertiary actions remain transparent with black text.
+- Violet is reserved for links, focus rings, selected states, and small identity accents—not primary button fills.
 - Default text uses `ink` or `text`; never use muted text for essential information.
 - Use mint only for highlights, creator-positive moments, or selected decorative areas—not primary buttons.
 - Status colour must always be paired with text or an icon.
 - Maintain WCAG AA contrast: `4.5:1` for normal text and `3:1` for large text and UI boundaries.
+
+## Expressive Gradient Pattern
+
+- Use one Prich gradient per asset; keep the canvas, card body, forms, and navigation neutral.
+- Gradients should blend two or three related hues with an off-centre radial highlight. Optional fine grain or thin contour lines may add depth, but must not reduce text or icon legibility.
+- Prefer gradients on artwork, editorial card thumbnails, selected promotional modules, and `32–40px` category icon tiles. Do not place body copy directly over them.
+- When a gradient carries a control, place the control on an opaque high-contrast surface and provide an accessible label.
+- Treat these tokens as a reusable visual family, not fixed artwork: vary crop and focal point while retaining Prich colours and avoiding another brand's signature compositions.
 
 ## Spacing and Layout
 
@@ -113,11 +138,16 @@ Prich uses a restrained black, cream, and grey foundation with a recognisable vi
 
 ## Core Components
 
-- **Primary button:** 44px minimum height, violet background, white label, 12px radius, 16px horizontal padding.
-- **Secondary button:** white or transparent surface, ink label, 1px strong border.
-- **Tertiary button:** text-only; use for low-priority actions.
-- **Danger button:** reserved for destructive confirmation, never for ordinary cancellation.
+- **Primary button:** 44px minimum height, black `button-primary` background, white label, 12px radius, and 16px horizontal padding. Hover uses `button-primary-hover`; active uses `button-primary-active`.
+- **Secondary button:** white or transparent surface, black label, and a 1px subtle black `button-border`. Hover uses `button-secondary-hover`.
+- **Marketing buttons:** may use `radius-pill`; keep the primary black and the secondary white with a quiet border and `shadow-sm`.
+- **Tertiary button:** transparent surface with black text; use for low-priority actions.
+- **Danger button:** `danger` background with white text, reserved for destructive confirmation and never ordinary cancellation.
 - **Inputs:** visible label, 44px minimum height, surface background, border default, violet 2px focus ring, inline error and recovery text.
+- **Editorial cards:** use a bordered white body with a `16:9` gradient or image header, optional pill metadata over the media, and a clean divider between media and copy. Keep text left-aligned and the whole card keyboard-focusable when clickable.
+- **Compact action cards:** pair a `32–40px` rounded gradient icon tile with a short title and one or two lines of muted supporting copy; align cards in a quiet bordered grid.
+- **Segmented tabs:** place tabs in a subtle neutral rail; the selected tab sits on a white inset card with a border or `shadow-sm`. Include a text label and optional small colour marker so selection never relies on colour alone.
+- **Icons:** use the standard Lucide outline system for interface actions. Category or feature icons may sit on gradient tiles, but remain simple, single-colour SVGs with consistent optical size and stroke.
 - **Creator cards:** image/avatar, creator name, verified state, niche, platform metrics, starting price, availability, and one clear action.
 - **Campaign cards:** status, next action, deadline, parties, deliverable, and amount. Status must not rely on colour alone.
 - **Chips:** use for niche, platform, and status; keep labels short and avoid dense chip clouds.
@@ -160,7 +190,7 @@ Prich uses a restrained black, cream, and grey foundation with a recognisable vi
 
 - Do not reproduce another product's logo, custom fonts, signature graphics, brand colours, or page compositions.
 - Do not use arbitrary hex values inside components; consume semantic tokens.
-- Do not use gradients on routine application surfaces.
+- Do not use gradients on routine application surfaces or as button fills; confine them to the expressive roles defined above.
 - Do not place more than one visually dominant CTA in a view.
 - Do not hide essential actions behind hover-only interactions.
 - Do not use font sizes below `12px`.

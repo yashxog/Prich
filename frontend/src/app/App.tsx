@@ -52,6 +52,27 @@ function CheckIcon(): ReactElement {
 }
 
 /**
+ * Renders a role-specific outline icon for an account option.
+ * @param role - The account role represented by the icon.
+ * @returns A decorative SVG icon for the selected role family.
+ */
+function RoleIcon({ role }: { role: AccountRole }): ReactElement {
+  if (role === 'brand') {
+    return (
+      <svg aria-hidden="true" className="role-option__icon" viewBox="0 0 24 24">
+        <path d="M5 19V8.5L12 5l7 3.5V19M9 19v-5h6v5M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg aria-hidden="true" className="role-option__icon" viewBox="0 0 24 24">
+      <path d="M12 13.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM5.5 20c.7-3.1 3-4.8 6.5-4.8s5.8 1.7 6.5 4.8M18.3 6.2l.5-1.3.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5Z" />
+    </svg>
+  )
+}
+
+/**
  * Renders the application wordmark.
  * @returns The Prich logo and product name.
  */
@@ -79,12 +100,15 @@ function RoleOptionCard({ isSelected, onChange, option }: RoleOptionCardProps): 
         type="radio"
         value={option.value}
       />
-      <span className="role-option__control" aria-hidden="true" />
+      <span className={`role-option__visual role-option__visual--${option.value}`} aria-hidden="true">
+        <RoleIcon role={option.value} />
+      </span>
       <span className="role-option__copy">
         <span className="role-option__eyebrow">{option.eyebrow}</span>
         <strong>{option.title}</strong>
         <span>{option.description}</span>
       </span>
+      <span className="role-option__control" aria-hidden="true" />
     </label>
   )
 }

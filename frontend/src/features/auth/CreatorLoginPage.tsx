@@ -54,8 +54,8 @@ export function CreatorLoginPage(): ReactElement {
     setIsSubmitting(true)
 
     try {
-      await signInCreator(form.email.trim(), form.password)
-      navigate('/creator/dashboard', { replace: true })
+      const profile = await signInCreator(form.email.trim(), form.password)
+      navigate(profile.isComplete ? '/creator/dashboard' : '/creator/onboarding', { replace: true })
     } catch (error) {
       setErrorMessage(getLoginErrorMessage(error))
       setIsSubmitting(false)

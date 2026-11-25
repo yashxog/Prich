@@ -32,6 +32,8 @@ async function authenticateForTest(
   response.locals.email = PROFILE.email
   response.locals.firstName = ''
   response.locals.lastName = ''
+  response.locals.phoneNumber = ''
+  response.locals.phoneVerifiedAt = null
   response.locals.userId = PROFILE.userId
   next()
 }

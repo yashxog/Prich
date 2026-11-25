@@ -1,7 +1,8 @@
-import type { CreatorProfile } from '@prich/shared'
+import type { CreatorProfile, UpdateCreatorProfileInput } from '@prich/shared'
 import {
   ensureCreatorProfileRecord,
   findCreatorProfileRecord,
+  updateCreatorProfileRecord,
   type CreatorProfileIdentity,
   type CreatorProfileRecord,
 } from './creator_profile.repository.js'
@@ -22,12 +23,23 @@ export async function ensureCreatorProfile(identity: CreatorProfileIdentity): Pr
  */
 function mapCreatorProfile(record: CreatorProfileRecord): CreatorProfile {
   return {
+    bio: record.bio,
+    country: record.country,
+    displayName: record.display_name,
     userId: record.user_id,
     firstName: record.first_name,
     lastName: record.last_name,
     email: record.email,
+    isComplete: Boolean(
+      record.display_name
+      && record.country
+      && record.niche
+    ),
     isLinkedInAttached: record.is_linkedin_attached,
     isXAttached: record.is_x_attached,
+    isPhoneVerified: Boolean(record.phone_number && record.phone_verified_at),
+    niche: record.niche,
+    phoneNumber: record.phone_number,
   }
 }
 
@@ -38,4 +50,23 @@ function mapCreatorProfile(record: CreatorProfileRecord): CreatorProfile {
  */
 export async function getCreatorProfile(userId: string): Promise<CreatorProfile> {
   return mapCreatorProfile(await findCreatorProfileRecord(userId))
+}
+
+/**
+ * Stores creator onboarding details with an optional phone number.
+ * @param userId - The creator ID verified by backend authentication.
+ * @param input - The validated creator profile values.
+ * @param phoneVerifiedAt - The trusted confirmation timestamp when the submitted phone matches Supabase Auth.
+ * @returns The normalized updated creator profile.
+ */
+export async function updateCreatorProfile(
+  userId: string,
+  input: UpdateCreatorProfileInput,
+  phoneVerifiedAt: string | null,
+): Promise<CreatorProfile> {
+  return mapCreatorProfile(await updateCreatorProfileRecord(userId, {
+    ...input,
+    phoneNumber: input.phoneNumber ?? '',
+    phoneVerifiedAt,
+  }))
 }

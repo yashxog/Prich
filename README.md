@@ -58,6 +58,8 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SECRET_KEY=your-server-only-secret-key
 ```
 
+For local development, configuring either `localhost` or `127.0.0.1` also permits the equivalent loopback origin on the same port. Production CORS remains restricted to the exact `FRONTEND_URL` origin.
+
 Apply the SQL files under `supabase/migrations/` to the matching Supabase project. The frontend uses Supabase for authentication; all application data access goes through the backend. Never place `SUPABASE_SECRET_KEY` in a `VITE_` variable or expose it to the browser.
 
 ## Production

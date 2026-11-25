@@ -46,13 +46,23 @@ Prich uses **Manrope** as its primary family for a clean, modern, and approachab
 
 ## Colour Tokens
 
-Prich uses a restrained black, cream, and grey foundation. Primary actions are monochrome, while violet and mint remain supporting identity colours.
+Prich uses a restrained black, warm-white, and grey foundation. Primary actions are monochrome, while violet and mint remain supporting identity colours.
+
+### Background hierarchy
+
+| Role | Token | Colour | Replaces | Use |
+|---|---|---|---|---|
+| Primary | `color-canvas` | `#FDFCFC` | `#F8F7F3` | Page and application canvas |
+| Secondary | `color-surface-subtle` | `#F5F3F1` | `#F1EFE9` and the hard-coded `#FCFBF8` hover surface | Quiet layout sections, rails, disabled surfaces, and neutral hover states |
+| Tertiary | `color-surface` | `#FFFFFF` | Existing `#FFFFFF` surface token; value unchanged | Cards, forms, navigation, and elevated content surfaces |
+
+Use the hierarchy through semantic tokens rather than placing these hex values inside components.
 
 ```css
 :root {
-  --color-canvas: #F8F7F3;
+  --color-canvas: #FDFCFC;
   --color-surface: #FFFFFF;
-  --color-surface-subtle: #F1EFE9;
+  --color-surface-subtle: #F5F3F1;
   --color-ink: #17161C;
   --color-text: #34323A;
   --color-text-muted: #706D76;
@@ -69,7 +79,7 @@ Prich uses a restrained black, cream, and grey foundation. Primary actions are m
   --color-button-primary-active: #17161C;
   --color-button-on-primary: #FFFFFF;
   --color-button-secondary: #FFFFFF;
-  --color-button-secondary-hover: #F1EFE9;
+  --color-button-secondary-hover: #F5F3F1;
   --color-button-text: #000000;
   --color-button-border: rgb(0 0 0 / 8%);
 

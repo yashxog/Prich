@@ -33,7 +33,7 @@ describe('BrandOnboardingPage', () => {
       website: 'https://northstar.example',
     })
 
-    render(
+    const { container } = render(
       <MemoryRouter initialEntries={['/brand/onboarding']}>
         <Routes>
           <Route path="/brand/onboarding" element={<BrandOnboardingPage />} />
@@ -43,6 +43,8 @@ describe('BrandOnboardingPage', () => {
     )
 
     fireEvent.change(await screen.findByLabelText('Company name'), { target: { value: 'Northstar Labs' } })
+    expect(container.querySelector('.profile-onboarding-page')).toBeInTheDocument()
+    expect(container.querySelector('.auth-story')).not.toBeInTheDocument()
     fireEvent.change(screen.getByLabelText(/^Website/), { target: { value: 'https://northstar.example' } })
     fireEvent.change(screen.getByLabelText('Category'), { target: { value: 'SaaS' } })
     fireEvent.click(screen.getByRole('button', { name: 'Save and continue' }))

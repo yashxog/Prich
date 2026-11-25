@@ -13,6 +13,8 @@
 - Social-connection flags cannot be modified directly by creators. Future verified OAuth connection services will update them.
 - Authentication redirects accept only internal `/creator/` destinations to prevent open redirects.
 - Brand and creator records use separate profile tables. Authentication alone never grants authorization to another account type.
+- Creator phone numbers are optional. The profile API validates a supplied number as E.164 and never trusts a client-supplied verification timestamp. It preserves verification only when the submitted number matches `user.phone` from Supabase Auth.
+- Never log phone numbers, OTP values, or raw authentication payloads.
 - `account_roles` assigns each Supabase UUID to exactly one account type. Profile creation claims and verifies that role before writing, preventing a creator session from crossing into brand APIs and vice versa.
 - Brand company details are accepted only after authentication and are validated at the API boundary; websites must use HTTP or HTTPS.
 - API responses expose safe errors, request bodies are size-bounded, CORS is restricted to the configured frontend, and requests are rate-limited.

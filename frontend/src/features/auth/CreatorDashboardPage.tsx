@@ -25,6 +25,12 @@ export function CreatorDashboardPage(): ReactElement {
     async function loadDashboard(): Promise<void> {
       try {
         const profile = await getCreatorProfile()
+
+        if (!profile.isComplete) {
+          navigate('/creator/onboarding', { replace: true })
+          return
+        }
+
         setDashboardState({ profile, status: 'ready' })
       } catch (error) {
         if (error instanceof ApiRequestError && error.status === 401) {
@@ -88,12 +94,15 @@ export function CreatorDashboardPage(): ReactElement {
       </header>
       <section className="dashboard-welcome" aria-labelledby="dashboard-title">
         <p className="eyebrow">Creator workspace</p>
-        <h1 id="dashboard-title">Welcome, {profile.firstName || 'Creator'}.</h1>
-        <p>Your account is ready. Next, we will build your public creator profile and connect your social analytics.</p>
+        <h1 id="dashboard-title">Welcome, {profile.displayName || profile.firstName || 'Creator'}.</h1>
+        <p>Your creator profile is ready. Next, connect your social analytics and publish your service packages.</p>
         <dl className="profile-summary">
           <div><dt>Email</dt><dd>{profile.email}</dd></div>
-          <div><dt>LinkedIn connected</dt><dd>{profile.isLinkedInAttached ? 'Yes' : 'Not yet'}</dd></div>
-          <div><dt>X connected</dt><dd>{profile.isXAttached ? 'Yes' : 'Not yet'}</dd></div>
+          <div><dt>Phone</dt><dd>{profile.phoneNumber || 'Not added'}</dd></div>
+          <div><dt>Country</dt><dd>{profile.country}</dd></div>
+          <div><dt>Niche</dt><dd>{profile.niche}</dd></div>
+          <div><dt>Bio</dt><dd>{profile.bio || 'Not added'}</dd></div>
+          <div><dt>Social analytics</dt><dd>{profile.isLinkedInAttached || profile.isXAttached ? 'Connected' : 'Not connected'}</dd></div>
         </dl>
       </section>
     </main>

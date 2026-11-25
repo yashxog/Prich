@@ -1,4 +1,8 @@
-import type { CreatorProfile, CreatorProfileResponse } from '@prich/shared'
+import type {
+  CreatorProfile,
+  CreatorProfileResponse,
+  UpdateCreatorProfileInput,
+} from '@prich/shared'
 import { apiRequest } from '../../services/api_client'
 import { getSupabaseClient } from '../../services/supabase_client'
 import {
@@ -43,7 +47,7 @@ export async function signUpCreator(input: CreatorSignUpInput): Promise<CreatorS
         first_name: input.firstName,
         last_name: input.lastName,
       },
-      emailRedirectTo: buildAuthCallbackUrl('/creator/dashboard'),
+      emailRedirectTo: buildAuthCallbackUrl('/creator/onboarding'),
     },
   })
 
@@ -62,9 +66,9 @@ export async function signUpCreator(input: CreatorSignUpInput): Promise<CreatorS
  * Signs an existing creator in with email and password.
  * @param email - The creator's email address.
  * @param password - The creator's password.
- * @returns Nothing after the session and creator profile are ready.
+ * @returns The profile that determines the next creator screen.
  */
-export async function signInCreator(email: string, password: string): Promise<void> {
+export async function signInCreator(email: string, password: string): Promise<CreatorProfile> {
   const { data, error } = await getSupabaseClient().auth.signInWithPassword({ email, password })
 
   if (error) {
@@ -72,6 +76,7 @@ export async function signInCreator(email: string, password: string): Promise<vo
   }
 
   await ensureCreatorProfile(data.session.access_token)
+  return getCreatorProfileWithToken(data.session.access_token)
 }
 
 /**
@@ -82,7 +87,7 @@ export async function signInCreatorWithGoogle(): Promise<void> {
   const { error } = await getSupabaseClient().auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: buildAuthCallbackUrl('/creator/dashboard'),
+      redirectTo: buildAuthCallbackUrl('/creator/onboarding'),
     },
   })
 
@@ -101,13 +106,33 @@ export async function completeCreatorAuth(code: string | null): Promise<void> {
 }
 
 /**
+ * Loads a creator profile with an already available access token.
+ * @param accessToken - The current Supabase access token.
+ * @returns The normalized creator profile.
+ */
+async function getCreatorProfileWithToken(accessToken: string): Promise<CreatorProfile> {
+  const response = await apiRequest<CreatorProfileResponse>('/api/v1/creator/profile', accessToken)
+  return response.profile
+}
+
+/**
  * Loads the current creator's private profile.
  * @returns The normalized creator profile.
  */
 export async function getCreatorProfile(): Promise<CreatorProfile> {
+  return getCreatorProfileWithToken(await getCurrentAccessToken())
+}
+
+/**
+ * Stores the current creator's profile details with an optional phone number.
+ * @param input - The validated creator profile values.
+ * @returns The updated normalized creator profile.
+ */
+export async function updateCreatorProfile(input: UpdateCreatorProfileInput): Promise<CreatorProfile> {
   const response = await apiRequest<CreatorProfileResponse>(
     '/api/v1/creator/profile',
     await getCurrentAccessToken(),
+    { body: JSON.stringify(input), method: 'PUT' },
   )
   return response.profile
 }

@@ -10,6 +10,29 @@ import { createSocialHandleRouter } from './modules/social_handles/social_handle
 import { healthRouter } from './modules/health/health.routes.js'
 
 /**
+ * Returns the configured frontend origin and its equivalent loopback alias for local development.
+ * @param frontendUrl - The exact frontend origin configured for the API.
+ * @returns The origins allowed to make browser requests to the API.
+ */
+export function getAllowedFrontendOrigins(frontendUrl: string): string[] {
+  const allowedOrigins = [frontendUrl]
+
+  try {
+    const url = new URL(frontendUrl)
+
+    if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+      const alternateUrl = new URL(url.toString())
+      alternateUrl.hostname = url.hostname === 'localhost' ? '127.0.0.1' : 'localhost'
+      allowedOrigins.push(alternateUrl.origin)
+    }
+  } catch {
+    // The configured value remains the only allowed origin when it is not a valid URL.
+  }
+
+  return allowedOrigins
+}
+
+/**
  * Creates the configured Prich HTTP API.
  * @returns An Express application with security and versioned business routes.
  */
@@ -23,7 +46,7 @@ export function createApp(): express.Express {
   app.use(cors({
     allowedHeaders: ['Authorization', 'Content-Type'],
     methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
-    origin: frontendUrl,
+    origin: getAllowedFrontendOrigins(frontendUrl),
   }))
   app.use(rateLimit({
     limit: 120,

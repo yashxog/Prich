@@ -9,11 +9,11 @@ Creator authentication uses Supabase Auth with email/password and Google OAuth.
 3. Google signup redirects through `/auth/callback` using PKCE.
 4. Both flows send the access token to `POST /api/v1/creator/profile/ensure` after a valid session exists.
 5. The backend verifies the token and writes the profile with its server-only database client.
-6. The creator is sent to `/creator/dashboard`.
+6. The creator is sent to `/creator/onboarding` to complete the profile before entering the dashboard. A phone number can be added but is optional.
 
 ## Login
 
-Existing creators can use email/password or Google at `/creator/login`. The login flow also asks the backend to ensure the creator profile exists, which safely repairs older authenticated users that do not yet have a profile row.
+Existing creators can use email/password or Google at `/creator/login`. The login flow also asks the backend to ensure the creator profile exists, which safely repairs older authenticated users that do not yet have a profile row. Incomplete profiles continue to the centered full-screen `/creator/onboarding` flow; complete profiles continue to the dashboard.
 
 The browser uses Supabase only for identity and session management. It does not query application tables or call database functions directly. Creator profile reads and writes go through the versioned backend API.
 
@@ -23,6 +23,10 @@ Email/password credentials for both creators and brands belong exclusively to Su
 
 `creator_profiles` contains:
 
+- a public display name;
+- an optional private E.164 phone number and its verification timestamp when previously confirmed;
+- country and niche;
+- an optional biography;
 - `user_id` — UUID referencing `auth.users`.
 - `first_name` and `last_name`.
 - `email`.
@@ -38,6 +42,17 @@ Email/password credentials for both creators and brands belong exclusively to Su
 3. The backend assigns the identity to the brand account type and creates a minimal profile containing its UUID and email.
 4. The authenticated `/brand/onboarding` screen collects company name, website, and category.
 5. Completed profiles continue to `/brand/dashboard`; returning brands with complete profiles go there directly after email login.
+
+Brand company details are collected in a centered full-screen onboarding layout rather than the split authentication layout.
+
+## Optional creator phone number
+
+1. The signed-in creator can leave both phone fields empty and continue onboarding.
+2. When supplied, the creator selects a flagged calling code and enters the national number separately. The browser combines them into E.164 form, for example `+919876543210`.
+3. The backend validates the optional number at the API boundary and stores it without requiring SMS verification.
+4. If the submitted number already matches a Supabase-confirmed phone, the backend preserves its trusted confirmation timestamp; it never accepts a confirmation timestamp from the browser.
+
+The creator's flagged country-of-residence selector remains separate from the phone prefix. Choosing one does not populate or replace the other.
 
 Brand credentials remain exclusively in Supabase Auth. The application table stores `user_id`, `company_name`, `email`, `website`, and `category`.
 

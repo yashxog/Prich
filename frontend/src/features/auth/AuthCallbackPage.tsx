@@ -20,7 +20,7 @@ function getSafeDestination(value: string | null): AuthCallbackDestination {
 
   return {
     accountType: 'creator',
-    path: value?.startsWith('/creator/') ? value : '/creator/dashboard',
+    path: value?.startsWith('/creator/') ? value : '/creator/onboarding',
   }
 }
 

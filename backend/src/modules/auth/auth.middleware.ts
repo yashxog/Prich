@@ -57,6 +57,8 @@ export async function authenticateRequest(
     response.locals.email = (data.user.email ?? '').slice(0, 320)
     response.locals.firstName = normalizeName(metadata.first_name ?? metadata.given_name)
     response.locals.lastName = normalizeName(metadata.last_name ?? metadata.family_name)
+    response.locals.phoneNumber = data.user.phone ?? ''
+    response.locals.phoneVerifiedAt = data.user.phone_confirmed_at ?? null
     response.locals.userId = data.user.id
     next()
   } catch {

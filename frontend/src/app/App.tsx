@@ -5,6 +5,7 @@ import { BrandLoginPage } from '../features/auth/BrandLoginPage'
 import { BrandOnboardingPage } from '../features/auth/BrandOnboardingPage'
 import { BrandSignUpPage } from '../features/auth/BrandSignUpPage'
 import { CreatorLoginPage } from '../features/auth/CreatorLoginPage'
+import { CreatorOnboardingPage } from '../features/auth/CreatorOnboardingPage'
 import { CreatorSignUpPage } from '../features/auth/CreatorSignUpPage'
 import { BrandMarketplacePage } from '../features/marketplace/BrandMarketplacePage'
 import { CreatorMarketplacePage } from '../features/marketplace/CreatorMarketplacePage'
@@ -235,6 +236,7 @@ function App(): ReactElement {
       <Route path="/" element={<LandingPage />} />
       <Route path="/creator/signup" element={<CreatorSignUpPage />} />
       <Route path="/creator/login" element={<CreatorLoginPage />} />
+      <Route path="/creator/onboarding" element={<CreatorOnboardingPage />} />
       <Route path="/creator/dashboard" element={<CreatorMarketplacePage />} />
       <Route path="/brand/signup" element={<BrandSignUpPage />} />
       <Route path="/brand/login" element={<BrandLoginPage />} />

@@ -2,7 +2,7 @@ import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactElemen
 import { useNavigate } from 'react-router-dom'
 import type { UpdateBrandProfileInput } from '@prich/shared'
 import { ApiRequestError } from '../../services/api_client'
-import { AuthShell } from './AuthShell'
+import { ProfileOnboardingShell } from './ProfileOnboardingShell'
 import { getBrandProfile, updateBrandProfile } from './brand_auth.service'
 
 const EMPTY_FORM: UpdateBrandProfileInput = { category: '', companyName: '', website: '' }
@@ -93,8 +93,7 @@ export function BrandOnboardingPage(): ReactElement {
   }
 
   return (
-    <AuthShell
-      accountType="brand"
+    <ProfileOnboardingShell
       description="These details help creators understand who they will be working with. You can update them later."
       eyebrow="Company setup · Step 2 of 2"
       title="Tell us about your brand"
@@ -119,6 +118,6 @@ export function BrandOnboardingPage(): ReactElement {
           {isSubmitting ? 'Saving company…' : 'Save and continue'}
         </button>
       </form>
-    </AuthShell>
+    </ProfileOnboardingShell>
   )
 }

@@ -5,16 +5,31 @@ export interface ApiHealth {
 }
 
 export interface CreatorProfile {
+  bio: string
+  country: string
+  displayName: string
   email: string
   firstName: string
+  isComplete: boolean
   isLinkedInAttached: boolean
+  isPhoneVerified: boolean
   isXAttached: boolean
   lastName: string
+  niche: string
+  phoneNumber: string
   userId: string
 }
 
 export interface CreatorProfileResponse {
   profile: CreatorProfile
+}
+
+export interface UpdateCreatorProfileInput {
+  bio: string
+  country: string
+  displayName: string
+  niche: string
+  phoneNumber?: string
 }
 
 export interface BrandProfile {

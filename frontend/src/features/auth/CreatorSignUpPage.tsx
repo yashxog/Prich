@@ -78,7 +78,7 @@ export function CreatorSignUpPage(): ReactElement {
       if (result.requiresEmailConfirmation) {
         setRequiresEmailConfirmation(true)
       } else {
-        navigate('/creator/dashboard', { replace: true })
+        navigate('/creator/onboarding', { replace: true })
       }
     } catch (error) {
       setErrorMessage(getErrorMessage(error))

@@ -1,13 +1,13 @@
 import { useState, type ChangeEvent, type FormEvent, type ReactElement } from 'react'
 import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { AuthCallbackPage } from '../features/auth/AuthCallbackPage'
-import { BrandDashboardPage } from '../features/auth/BrandDashboardPage'
 import { BrandLoginPage } from '../features/auth/BrandLoginPage'
 import { BrandOnboardingPage } from '../features/auth/BrandOnboardingPage'
 import { BrandSignUpPage } from '../features/auth/BrandSignUpPage'
-import { CreatorDashboardPage } from '../features/auth/CreatorDashboardPage'
 import { CreatorLoginPage } from '../features/auth/CreatorLoginPage'
 import { CreatorSignUpPage } from '../features/auth/CreatorSignUpPage'
+import { BrandMarketplacePage } from '../features/marketplace/BrandMarketplacePage'
+import { CreatorMarketplacePage } from '../features/marketplace/CreatorMarketplacePage'
 
 type AccountRole = 'brand' | 'creator'
 
@@ -235,11 +235,11 @@ function App(): ReactElement {
       <Route path="/" element={<LandingPage />} />
       <Route path="/creator/signup" element={<CreatorSignUpPage />} />
       <Route path="/creator/login" element={<CreatorLoginPage />} />
-      <Route path="/creator/dashboard" element={<CreatorDashboardPage />} />
+      <Route path="/creator/dashboard" element={<CreatorMarketplacePage />} />
       <Route path="/brand/signup" element={<BrandSignUpPage />} />
       <Route path="/brand/login" element={<BrandLoginPage />} />
       <Route path="/brand/onboarding" element={<BrandOnboardingPage />} />
-      <Route path="/brand/dashboard" element={<BrandDashboardPage />} />
+      <Route path="/brand/dashboard" element={<BrandMarketplacePage />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
       <Route path="*" element={<Navigate replace to="/" />} />
     </Routes>

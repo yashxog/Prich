@@ -1,6 +1,19 @@
 alter table public.account_roles drop constraint account_roles_pkey;
 alter table public.account_roles add primary key (user_id, account_type);
 
+insert into public.account_roles (user_id, account_type)
+select user_id, 'creator'
+from public.creator_profiles
+on conflict (user_id, account_type) do nothing;
+
+insert into public.account_roles (user_id, account_type)
+select user_id, 'brand'
+from public.brand_profiles
+on conflict (user_id, account_type) do nothing;
+
+comment on table public.account_roles is
+  'Backend-only role grants. One authenticated identity may hold both creator and brand roles.';
+
 create table public.campaigns (
   id bigint generated always as identity primary key,
   brand_user_id uuid not null references auth.users(id) on delete cascade,

@@ -1,6 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'
 import type { ApiErrorResponse } from '@prich/shared'
-import { AccountRoleConflictError } from '../modules/auth/account_role.repository.js'
 
 /**
  * Converts unexpected route failures into a safe API response.
@@ -22,10 +21,5 @@ export function errorHandler(
     path: request.path,
     errorName: error instanceof Error ? error.name : 'UnknownError',
   }))
-  if (error instanceof AccountRoleConflictError) {
-    response.status(409).json({ error: error.message })
-    return
-  }
-
   response.status(500).json({ error: 'The request could not be completed.' })
 }

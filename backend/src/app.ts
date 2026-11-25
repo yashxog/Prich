@@ -5,6 +5,8 @@ import helmet from 'helmet'
 import { errorHandler } from './middleware/error_handler.js'
 import { createBrandProfileRouter } from './modules/brand_profile/brand_profile.routes.js'
 import { createCreatorProfileRouter } from './modules/creator_profile/creator_profile.routes.js'
+import { createCampaignRouter } from './modules/campaigns/campaigns.routes.js'
+import { createSocialHandleRouter } from './modules/social_handles/social_handles.routes.js'
 import { healthRouter } from './modules/health/health.routes.js'
 
 /**
@@ -32,6 +34,8 @@ export function createApp(): express.Express {
   app.use('/api/health', healthRouter)
   app.use('/api/v1/brand/profile', createBrandProfileRouter())
   app.use('/api/v1/creator/profile', createCreatorProfileRouter())
+  app.use('/api/v1/marketplace', createCampaignRouter())
+  app.use('/api/v1/social-handles', createSocialHandleRouter())
   app.use(errorHandler)
 
   return app
